@@ -17,6 +17,7 @@ function Character(game, x, y, spriteName) {
   Phaser.Sprite.apply(this, arguments);
 
   game.physics.arcade.enable(this);
+  
 
   game.add.existing(this);
 }

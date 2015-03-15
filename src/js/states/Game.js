@@ -1,3 +1,4 @@
+var Level = require('../entities/Level');
 var Player = require('../entities/Player');
 
 function Game() {
@@ -5,8 +6,12 @@ function Game() {
 }
 
 Game.prototype.create = function create() {
+
+  this.level = new Level(this.game);
+
   var x = (this.game.width / 2) - 100;
   var y = (this.game.height / 2) - 50;
+
 
   this.player = new Player(this.game, x, y);
 
@@ -16,7 +21,11 @@ Game.prototype.create = function create() {
 };
 
 Game.prototype.update = function update() {
-
+	this.game.physics.arcade.collide(this.player, this.level);
+	
+	//CMH: don't like this but the array wouldn't work for some reason
+	this.game.physics.arcade.collide(this.player, this.level.groundLayer);
+	this.game.physics.arcade.collide(this.player, this.level.barrierLayer);
 };
 
 Game.prototype.onInputDown = function onInputDown() {

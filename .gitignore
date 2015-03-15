@@ -2,5 +2,6 @@
 *.db
 node_modules/
 bower_components/
+dist/*
 .idea
-
+npm-debug.log

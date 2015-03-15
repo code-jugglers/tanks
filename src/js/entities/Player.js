@@ -83,6 +83,11 @@ Player.prototype.update = function() {
   function key(dir) {
     return cursors[dir].isDown;
   }
+
+  if (this.game.tanksConfig.debug) {
+    this.game.debug.body(this);  
+  }
+  
 };
 
 module.exports = Player;

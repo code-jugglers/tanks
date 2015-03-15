@@ -12,7 +12,12 @@ Preloader.prototype.preload = function () {
   this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
   this.load.setPreloadSprite(this.asset);
 
-  this.load.spritesheet('robot', 'assets/robot.png', 55, 100)
+  this.load.spritesheet('robot', 'assets/robot.png', 55, 100);
+  this.load.image('ground', 'assets/ground.png');
+  // this.load.image('barrier', 'assets/barrier.png');
+  this.load.image('terrain', 'assets/terrain.png');
+
+  this.game.tanksConfig = require('../data/TanksConfig');
 };
 
 Preloader.prototype.create = function () {
