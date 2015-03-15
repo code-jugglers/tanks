@@ -7,9 +7,8 @@ function CannonBall(game, x, y) {
 
   this.hits = 0;
 
-  game.physics.arcade.enable(this);
-
   this.anchor.setTo(0.5, 0.5);
+
   // Start arbitrary, it feels like a cannon ball physics
   this.body.bounce.setTo(0.7, 0.7);
   this.body.drag.x = 10;
@@ -29,14 +28,14 @@ CannonBall.prototype.constructor = CannonBall;
 module.exports = CannonBall;
 
 CannonBall.prototype.update = function() {
-  if (this.hits >= MAX_HITS) {
+  if(this.hits >= MAX_HITS) {
     this.destroy();
   }
-}
+};
 
 CannonBall.prototype.terrainCollision = function(ball, terrainLayer) {
   ball.hits++;
-}
+};
 
 /**
  * @name shoot
@@ -48,4 +47,4 @@ CannonBall.prototype.terrainCollision = function(ball, terrainLayer) {
 CannonBall.prototype.shoot = function(x1, y1, x2, y2) {
   //CMH: Right now, simple vector calc, can apply multiplier for MOAR POWER!
   this.body.velocity.setTo(x2-x1, y2-y1);
-}
+};
