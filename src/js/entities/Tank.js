@@ -13,7 +13,6 @@ var Character = require('./Character'),
  * @param {number} x - the x position of the player
  * @param {number} y - the y position of the player
  *
- *
  * @constructor
  */
 function Tank(game, x, y) {
@@ -36,6 +35,8 @@ Tank.prototype.constructor = Tank;
 /**
  * @name update
  *
+ * @memberof Tank
+ *
  * @description
  * Automatically called by World.update
  * Sets keyboard controls for the player
@@ -43,31 +44,18 @@ Tank.prototype.constructor = Tank;
 Tank.prototype.update = function() {
   var cursors = this.cursors;
 
-  if (key('left')) {
+  if(cursors['left'].isDown) {
     this.body.velocity.x = -200; // move left
   }
-  else if (key('right')) {
+  else if(cursors['right'].isDown) {
     this.body.velocity.x = 200; // move right
   }
   else {
-    this.body.velocity.x = 0;
+    this.body.velocity.x = 0; // stop
   }
 
-  // Fire the cannonball from the front of the tank
-  // DRB - Currently only fires if no other cannon balls exist for the specific tank instance
   if(this.spaceBar.isDown) {
-    this.fire();
-  }
-
-  /**
-   * @name key
-   *
-   * @param {string} dir - the key direction to check
-   *
-   * @return {boolean}
-   */
-  function key(dir) {
-    return cursors[dir].isDown;
+    this.fire(); // fire cannon ball
   }
 
   if(this.game.tanksConfig.debug) {
@@ -75,6 +63,14 @@ Tank.prototype.update = function() {
   }
 };
 
+/**
+ * @name fire
+ *
+ * @memberof Tank
+ *
+ * @description
+ * Fire a cannonball
+ */
 Tank.prototype.fire = function fire() {
   if(!this.balls.length) {
     var ball = new CannonBall(this.game, this.body.x + 135, this.body.y);
