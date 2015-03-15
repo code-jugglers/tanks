@@ -1,8 +1,8 @@
-var Character = require('./Character');
-var CannonBall = require('./CannonBall');
+var Character = require('./Character'),
+    CannonBall = require('./CannonBall');
 
 /**
- * @class Player
+ * @class Tank
  *
  * @extends Character
  *
@@ -79,7 +79,7 @@ Tank.prototype.fire = function fire() {
   if(!this.balls.length) {
     var ball = new CannonBall(this.game, this.body.x + 135, this.body.y);
 
-    //TODO: this even does not seem to be firing
+    //TODO: this event does not seem to be firing
     ball.events.onDestroy.add(function() {
       var balls = this.balls;
 
@@ -89,7 +89,7 @@ Tank.prototype.fire = function fire() {
       balls.splice(balls.indexOf(ball),1);
     }.bind(this), ball);
 
-    ball.shoot(100, 400, 300, 0);
+    ball.shoot(100, 200, 200, 0);
 
     this.balls.push(ball);
   }
