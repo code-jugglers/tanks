@@ -16,8 +16,7 @@ Game.prototype.create = function create() {
   var x = (this.game.width / 2) - 100;
   var y = (this.game.height / 2) - 50;
 
-  this.player = new Tank(this.game, x, y);
-  this.player.anchor.setTo(0.5, 0.5);
+  this.player = new Tank(this.game, x, this.game.height-75);
 
   this.input.onDown.add(this.onInputDown, this);
 };

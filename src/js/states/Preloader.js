@@ -13,6 +13,7 @@ Preloader.prototype.preload = function () {
   this.load.setPreloadSprite(this.asset);
 
   this.load.spritesheet('tank', 'assets/tank.png', 135, 50);
+  this.load.image('tank_barrel', 'assets/tank_barrel.png');
   this.load.image('terrain', 'assets/terrain.png');
   this.load.image('ball', 'assets/pangball.png');
 

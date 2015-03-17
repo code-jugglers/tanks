@@ -12,12 +12,12 @@ function CannonBall(game, x, y) {
   // Start arbitrary, it feels like a cannon ball physics
   this.body.bounce.setTo(0.7, 0.7);
   this.body.drag.x = 10;
-  this.body.drag.y = 50;
+  this.body.drag.y = 10;
   this.body.mass = 10;		// 10x more massive than player
   // End arbitrary, i am god
 
   this.checkWorldBounds = true;
-  this.outOfBoundsKill = true;
+  // this.outOfBoundsKill = true;
 
   game.add.existing(this);
 }
@@ -28,7 +28,7 @@ CannonBall.prototype.constructor = CannonBall;
 module.exports = CannonBall;
 
 CannonBall.prototype.update = function() {
-  if(this.hits >= MAX_HITS) {
+  if(!this.inWorld || this.hits >= MAX_HITS) {
     this.destroy();
   }
 };
