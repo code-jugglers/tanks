@@ -28,6 +28,7 @@ function Tank(game, x, y) {
   this.tank.anchor.setTo(0.5, 0.5);
   this.tank.body.allowGravity = false;
   this.tank.body.collideWorldBounds = true;
+  this.tank.body.immovable = true;
 
   this.barrel = this.create(1, -18, 'tank_barrel');
   // game.physics.arcade.enable(this.barrel);
