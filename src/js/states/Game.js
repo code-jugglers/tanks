@@ -33,9 +33,13 @@ Game.prototype.create = function create() {
   var y = (this.game.height / 2) - 50;
 
   this.players = {
-    player1: new Tank(this.game, x, this.game.height-75),
-    player2: new Tank(this.game, x + 300, this.game.height-75)
+    1: new Tank(this.game, x, this.game.height-75),
+    2: new Tank(this.game, x + 300, this.game.height-75)
   };
+
+  this.currentPlayer = Math.floor(Math.random() * 2) + 1;
+
+  this.players[this.currentPlayer].active = true;
 
   this.input.onDown.add(this.onInputDown, this);
 };

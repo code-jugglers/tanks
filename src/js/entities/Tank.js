@@ -55,6 +55,8 @@ Tank.prototype.constructor = Tank;
  * Sets keyboard controls for the player
  */
 Tank.prototype.update = function() {
+  if(!this.active) { return false; }
+
   var cursors = this.game.cursors;
 
   var dt = this.game.time.physicsElapsedMS;
