@@ -1,50 +1,122 @@
 var Level = require('../entities/Level');
 var Tank = require('../entities/Tank');
 
+/**
+ * @name Game
+ *
+ * @description
+ * The main game stage
+ *
+ * @constructor
+ */
 function Game() {
-  this.player = null;
+  this.players = {};
 }
 
+/**
+ * @name create
+ *
+ * @memberof Game
+ */
 Game.prototype.create = function create() {
 	// Give the world gravity, number appears to be arbitrary, 200 taken from examples
 	this.game.physics.arcade.gravity.y = 200;
 
   this.game.stage.backgroundColor = '#71c5cf';
 
+  this.game.cursors = this.game.input.keyboard.createCursorKeys();
+  this.game.cursors.spaceBar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
   this.level = new Level(this.game);
 
   var x = (this.game.width / 2) - 100;
   var y = (this.game.height / 2) - 50;
 
-  this.player = new Tank(this.game, x, this.game.height-75);
+  this.players = {
+    player1: new Tank(this.game, x, this.game.height-75),
+    player2: new Tank(this.game, x + 300, this.game.height-75)
+  };
 
   this.input.onDown.add(this.onInputDown, this);
 };
 
+/**
+ * @name update
+ *
+ * @memberof Game
+ */
 Game.prototype.update = function update() {
-	//CMH: The Arcade collision mechanisms isn't exactly great, need better system to apply
-	//generically to the world
-	this.game.physics.arcade.collide(this.player, this.level);
-
-	//CMH: don't like this but the array wouldn't work for some reason
-	this.game.physics.arcade.collide(this.player, this.level.groundLayer);
-	this.game.physics.arcade.collide(this.player, this.level.barrierLayer);
-
-	//CMH: so looping through all balls in play, really only one (maybe?) in final play so may
-	//not need all this crap and it may need to be moved elsewhere, here now for physics engine
-	var ball;
-
-	for (var i = 0, len = this.player.balls.length; i < len; i++) {
-		ball = this.player.balls[i];
-
-		this.game.physics.arcade.collide(ball, this.player); // this will need a callback to indicate something bad happened
-		this.game.physics.arcade.collide(ball, this.level.barrierLayer, ball.terrainCollision);
-		this.game.physics.arcade.collide(ball, this.level.groundLayer, ball.terrainCollision);
-	}
+  for(var player in this.players) {
+    if(this.players.hasOwnProperty(player)) {
+      _playerPhysics(this.game, this.level, this.players[player]);
+    }
+  }
 };
 
+/**
+ * @name onInputDown
+ *
+ * @memberof Game
+ */
 Game.prototype.onInputDown = function onInputDown() {
 
 };
+
+/**
+ * @name _playerPhysics\
+ *
+ * @description
+ * Add collisions to the players, the connon balls, and the level environment
+ *
+ * @param {object} game - the game object
+ * @param {object} level - the generated level
+ * @param {object} player - the player object
+ *
+ * @memberof Game
+ *
+ * @private
+ */
+function _playerPhysics(game, level, player) {
+  //CMH: The Arcade collision mechanisms isn't exactly great, need better system to apply
+  //DRB: What is this bit actually doing? it doesn't seem to do anything if I comment it out...
+  //generically to the world
+  game.physics.arcade.collide(player, level);
+
+  //same down here
+  _levelCollision(game, level, player);
+
+  var ball;
+
+  for (var i = 0, len = player.balls.length; i < len; i++) {
+    ball = player.balls[i];
+
+    game.physics.arcade.collide(ball, player); // this will need a callback to indicate something bad happened\
+
+    _levelCollision(game, level, ball, ball.terrainCollision);
+  }
+}
+
+/**
+ * @name _levelCollision
+ *
+ * @description
+ * set collisions with all things in the level and something else
+ *
+ * @param {object} game - the game object
+ * @param {level} level - the level object
+ * @param {object} thingy - something to collide with
+ * @param {function} [cb] - OPTIONAL callback to be called when collision occurs
+ *
+ * @memberof Game
+ *
+ * @private
+ */
+function _levelCollision(game, level, thingy, cb) {
+  for(var platform in level) {
+    if(level.hasOwnProperty(platform)) {
+      game.physics.arcade.collide(thingy, level[platform], cb || null);
+    }
+  }
+}
 
 module.exports = Game;

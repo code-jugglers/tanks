@@ -17,22 +17,24 @@ var CharacterGroup = require('./CharacterGroup'),
  */
 function Tank(game, x, y) {
   CharacterGroup.call(this, game); //, x, y, 'tank');
+
   this.x = x;
   this.y = y;
 
-  this.cursors = game.input.keyboard.createCursorKeys();
-  this.spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
   this.tank = this.create(0, 0, 'tank');
+
   game.physics.arcade.enable(this.tank);
+
   this.tank.anchor.setTo(0.5, 0.5);
   this.tank.body.allowGravity = false;
   this.tank.body.collideWorldBounds = true;
   this.tank.body.immovable = true;
 
   this.barrel = this.create(1, -18, 'tank_barrel');
+
   // game.physics.arcade.enable(this.barrel);
   this.barrel.anchor.setTo(0, 0.5);
+
   // this.barrel.body.allowGravity = false;
 
   this.balls = [];
@@ -53,25 +55,25 @@ Tank.prototype.constructor = Tank;
  * Sets keyboard controls for the player
  */
 Tank.prototype.update = function() {
-  var cursors = this.cursors;
+  var cursors = this.game.cursors;
 
   var dt = this.game.time.physicsElapsedMS;
 
-  if (cursors['up'].isDown) {
+  if (cursors.up.isDown) {
     this.barrel.angle = Math.max(this.barrel.angle + -0.2*dt, -90);
   }
-  else if (cursors['down'].isDown) {
+  else if (cursors.down.isDown) {
     this.barrel.angle = Math.min(this.barrel.angle + 0.2*dt, 0);
   }
   
-  if(cursors['left'].isDown) {
+  if(cursors.left.isDown) {
     this.x = Math.max(this.x - 0.2*dt, 68); //150;
   }
-  else if(cursors['right'].isDown) {
+  else if(cursors.right.isDown) {
     this.x = Math.min(this.x + 0.2*dt, this.game.width-68);
   }
 
-  if(this.spaceBar.isDown) {
+  if(cursors.spaceBar.isDown) {
     this.fire(); // fire cannon ball
   }
 
