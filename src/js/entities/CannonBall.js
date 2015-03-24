@@ -5,6 +5,8 @@ var MAX_HITS = 3;
 function CannonBall(game, x, y) {
   Character.call(this, game, x, y, 'ball');
 
+  this.game = game;
+
   this.hits = 0;
 
   this.anchor.setTo(0.5, 0.5);
@@ -29,6 +31,8 @@ module.exports = CannonBall;
 
 CannonBall.prototype.update = function() {
   if(!this.inWorld || this.hits >= MAX_HITS) {
+    this.game.events.turnEnded.dispatch(this);
+
     this.destroy();
   }
 };

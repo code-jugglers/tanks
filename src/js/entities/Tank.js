@@ -21,9 +21,11 @@ function Tank(game, x, y) {
   this.x = x;
   this.y = y;
 
+  this.game = game;
+
   this.tank = this.create(0, 0, 'tank');
 
-  game.physics.arcade.enable(this.tank);
+  this.game.physics.arcade.enable(this.tank);
 
   this.tank.anchor.setTo(0.5, 0.5);
   this.tank.body.allowGravity = false;
@@ -44,6 +46,8 @@ function Tank(game, x, y) {
 
 Tank.prototype = Object.create(CharacterGroup.prototype);
 Tank.prototype.constructor = Tank;
+
+module.exports = Tank;
 
 /**
  * @name update
@@ -120,5 +124,3 @@ Tank.prototype.fire = function fire() {
     this.balls.push(ball);
   }
 };
-
-module.exports = Tank;

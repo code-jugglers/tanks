@@ -13,6 +13,8 @@ function Game() {
   this.players = {};
 }
 
+module.exports = Game;
+
 /**
  * @name create
  *
@@ -22,26 +24,43 @@ Game.prototype.create = function create() {
 	// Give the world gravity, number appears to be arbitrary, 200 taken from examples
 	this.game.physics.arcade.gravity.y = 200;
 
-  this.game.stage.backgroundColor = '#71c5cf';
+  this.game.stage.backgroundColor = '#71c5cf'; // set background color
 
+  // create the game keys. directional arrow ans spacebar
   this.game.cursors = this.game.input.keyboard.createCursorKeys();
   this.game.cursors.spaceBar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-  this.level = new Level(this.game);
+  this.level = new Level(this.game); // create the level
+
+  this.game.events = {}; // empty events object
+
+  this.game.events.turnEnded = new Phaser.Signal(); // create new signal for a turn ending
 
   var x = (this.game.width / 2) - 100;
   var y = (this.game.height / 2) - 50;
 
+  // Players object, contains all potential players
   this.players = {
     1: new Tank(this.game, x, this.game.height-75),
     2: new Tank(this.game, x + 300, this.game.height-75)
   };
 
-  this.currentPlayer = Math.floor(Math.random() * 2) + 1;
+  this.players[Math.floor(Math.random() * 2) + 1].active = true; // randomly select the first player
 
-  this.players[this.currentPlayer].active = true;
+  this.game.events.turnEnded.add(swapActivePlayer.bind(this)); // listen for turn the turn ended event
 
-  this.input.onDown.add(this.onInputDown, this);
+  /**
+   * @name swapActivePlayer
+   *
+   * @description
+   * swap which player is active
+   *
+   * @memberof create
+   */
+  function swapActivePlayer() {
+    this.players['1'].active = !this.players['1'].active;
+    this.players['2'].active = !this.players['2'].active;
+  }
 };
 
 /**
@@ -55,15 +74,6 @@ Game.prototype.update = function update() {
       _playerPhysics(this.game, this.level, this.players[player]);
     }
   }
-};
-
-/**
- * @name onInputDown
- *
- * @memberof Game
- */
-Game.prototype.onInputDown = function onInputDown() {
-
 };
 
 /**
@@ -118,9 +128,7 @@ function _playerPhysics(game, level, player) {
 function _levelCollision(game, level, thingy, cb) {
   for(var platform in level) {
     if(level.hasOwnProperty(platform)) {
-      game.physics.arcade.collide(thingy, level[platform], cb || null);
+      game.physics.arcade.collide(thingy, level[platform], (cb || null));
     }
   }
 }
-
-module.exports = Game;
