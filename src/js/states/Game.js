@@ -26,7 +26,7 @@ Game.prototype.create = function create() {
 
   this.game.stage.backgroundColor = '#71c5cf'; // set background color
 
-  // create the game keys. directional arrow ans spacebar
+  // create the game keys. directional arrow ans space bar
   this.game.cursors = this.game.input.keyboard.createCursorKeys();
   this.game.cursors.spaceBar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
@@ -47,7 +47,7 @@ Game.prototype.create = function create() {
 
   this.players[Math.floor(Math.random() * 2) + 1].active = true; // randomly select the first player
 
-  this.game.events.turnEnded.add(swapActivePlayer.bind(this)); // listen for turn the turn ended event
+  this.game.events.turnEnded.add(swapActivePlayer.bind(this)); // listen for the turn ended event and swap active player
 
   /**
    * @name swapActivePlayer
@@ -77,7 +77,7 @@ Game.prototype.update = function update() {
 };
 
 /**
- * @name _playerPhysics\
+ * @name _playerPhysics
  *
  * @description
  * Add collisions to the players, the connon balls, and the level environment

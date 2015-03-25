@@ -1,5 +1,5 @@
-var CharacterGroup = require('./CharacterGroup'),
-    CannonBall = require('./CannonBall');
+var CharacterGroup = require('./CharacterGroup');
+var CannonBall = require('./CannonBall');
 
 /**
  * @class Tank
@@ -59,7 +59,9 @@ module.exports = Tank;
  * Sets keyboard controls for the player
  */
 Tank.prototype.update = function() {
-  if(!this.active) { return false; }
+  // Don't allow movement if it is not the current tanks turn or if a shot has been fired already
+  // YOU MUST LIVE WITH THE CONSEQUENCES
+  if(!this.active || this.balls.length) { return false; }
 
   var cursors = this.game.cursors;
 
@@ -73,10 +75,10 @@ Tank.prototype.update = function() {
   }
   
   if(cursors.left.isDown) {
-    this.x = Math.max(this.x - 0.2*dt, 68); //150;
+    this.x = Math.max(this.x - 0.2 * dt, 68); //150;
   }
   else if(cursors.right.isDown) {
-    this.x = Math.min(this.x + 0.2*dt, this.game.width-68);
+    this.x = Math.min(this.x + 0.2 * dt, this.game.width-68);
   }
 
   if(cursors.spaceBar.isDown) {
@@ -116,6 +118,7 @@ Tank.prototype.fire = function fire() {
 
     ball.events.onDestroy.add(function() {
       var balls = this.balls;
+
       balls.splice(balls.indexOf(ball),1);
     }.bind(this), ball);
 

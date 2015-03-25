@@ -1,6 +1,6 @@
 'use strict';
 
-var game = new Phaser.Game(850, 600, Phaser.AUTO, 'robo-game');
+var game = new Phaser.Game(1000, 600, Phaser.AUTO, 'robo-game');
 
 window.playerState = {
   currentLevel: 'Game'
