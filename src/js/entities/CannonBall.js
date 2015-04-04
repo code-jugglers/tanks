@@ -8,6 +8,7 @@ function CannonBall(game, x, y) {
   this.game = game;
 
   this.hits = 0;
+  this.tankHit = false;
 
   this.anchor.setTo(0.5, 0.5);
 
@@ -21,6 +22,9 @@ function CannonBall(game, x, y) {
   this.checkWorldBounds = true;
   // this.outOfBoundsKill = true;
 
+  this.masks = game.tanksConfig.masks;
+  game.physicsmgr.register(this, this.masks.BALL, this.masks.BALL, this.postCollision);
+
   game.add.existing(this);
 }
 
@@ -30,15 +34,29 @@ CannonBall.prototype.constructor = CannonBall;
 module.exports = CannonBall;
 
 CannonBall.prototype.update = function() {
+  if (this.game.tanksConfig.debug) {
+    this.game.debug.body(this);
+  }
+
   if(!this.inWorld || this.hits >= MAX_HITS) {
     this.game.events.turnEnded.dispatch(this);
-
     this.destroy();
+  }
+  else if (this.tankHit) {
+    // Maybe do something different here eventually
+    // Hit/damage logic should happen in tank collision handler
+    this.game.events.turnEnded.dispatch(this);
+    this.destroy(); 
   }
 };
 
-CannonBall.prototype.terrainCollision = function(ball, terrainLayer) {
-  ball.hits++;
+CannonBall.prototype.postCollision = function(other, otherCGID) {
+  if (otherCGID & this.masks.GROUND || otherCGID & this.masks.BARRIER) {
+    this.hits++;
+  }
+  else if (otherCGID & this.masks.TANK) {
+    this.tankHit = true;
+  }
 };
 
 /**

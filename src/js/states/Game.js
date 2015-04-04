@@ -1,5 +1,6 @@
 var Level = require('../entities/Level');
 var Tank = require('../entities/Tank');
+var PhysicsMgr = require('../mgr/PhysicsMgr');
 
 /**
  * @name Game
@@ -25,6 +26,9 @@ Game.prototype.create = function create() {
 	this.game.physics.arcade.gravity.y = 200;
 
   this.game.stage.backgroundColor = '#71c5cf'; // set background color
+
+  // Create physics manager/helper
+	this.game.physicsmgr = new PhysicsMgr(this, this.game);
 
   // create the game keys. directional arrow ans space bar
   this.game.cursors = this.game.input.keyboard.createCursorKeys();
@@ -68,60 +72,5 @@ Game.prototype.create = function create() {
  * @memberof Game
  */
 Game.prototype.update = function update() {
-  for(var player in this.players) {
-    if(this.players.hasOwnProperty(player)) {
-      _playerPhysics(this.game, this.level, this.players[player]);
-    }
-  }
+	this.game.physicsmgr.update();
 };
-
-/**
- * @name _playerPhysics
- *
- * @description
- * Add collisions to the players, the connon balls, and the level environment
- *
- * @param {object} game - the game object
- * @param {object} level - the generated level
- * @param {object} player - the player object
- *
- * @memberof Game
- *
- * @private
- */
-function _playerPhysics(game, level, player) {
-  //same down here
-  _levelCollision(game, level, player);
-
-  var ball;
-
-  for (var i = 0, len = player.balls.length; i < len; i++) {
-    ball = player.balls[i];
-
-    game.physics.arcade.collide(ball, player); // this will need a callback to indicate something bad happened\
-
-    _levelCollision(game, level, ball, ball.terrainCollision);
-  }
-}
-
-/**
- * @name _levelCollision
- *
- * @description
- * set collisions with all things in the level and something else
- *
- * @param {object} game - the game object
- * @param {level} level - the level object
- * @param {object} thingy - something to collide with
- * @param {function} [cb] - OPTIONAL callback to be called when collision occurs
- *
- * @memberof Game
- *
- * @private
- */
-function _levelCollision(game, level, thingy, cb) {
-	var i, len;
-  for(i = 0, len = level.tileLayers.length; i < len; i++) {
-    game.physics.arcade.collide(thingy, level.tileLayers[i], (cb || null));
-  }
-}

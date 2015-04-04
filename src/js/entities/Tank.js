@@ -46,7 +46,10 @@ function Tank(game, x, y, faceEast) {
     this.scale.x = -1;
   }
 
+  var masks = game.tanksConfig.masks;
+  game.physicsmgr.register(this.tank, masks.TANK, masks.BALL | masks.BARRIER, this.postCollision, this);
   game.add.existing(this);
+  this.masks = masks;
 }
 
 Tank.prototype = Object.create(CharacterGroup.prototype);
@@ -120,6 +123,7 @@ Tank.prototype.fire = function fire() {
     var ball_y = this.y + this.barrel.y + sin_res * barrel_len;
 
     var ball = new CannonBall(this.game, ball_x, ball_y);
+    ball.owner = this;
 
     ball.events.onDestroy.add(function() {
       var balls = this.balls;
@@ -130,5 +134,20 @@ Tank.prototype.fire = function fire() {
     ball.shoot(ball_x, ball_y, ball_x + (cos_res * ball_power) * this.scale.x, ball_y + sin_res * ball_power);
 
     this.balls.push(ball);
+  }
+};
+
+Tank.prototype.postCollision = function(other, otherCGID) {
+  if (otherCGID & this.masks.BARRIER) {
+    //need to collide with barrier to prevent people from driving through them, potential
+    //if we generate the level properly then this may become a non-issue
+  }
+  else if (otherCGID & this.masks.BALL) {
+    if (other.owner == this) {
+      alert("You fucking idiot!");
+    }
+    else {
+      alert("HIT! Points!");
+    }
   }
 };

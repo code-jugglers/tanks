@@ -36,6 +36,10 @@ function Level(game) {
   // Tiles 0 to 1 are 'collidable'
   this.terrainMap.setCollision([0,1], true, this.groundLayer, false);
   this.terrainMap.setCollision([0,1], true, this.barrierLayer, false);
+
+  var masks = game.tanksConfig.masks;
+  game.physicsmgr.register(this.groundLayer, masks.GROUND, masks.BALL);
+  game.physicsmgr.register(this.barrierLayer, masks.BARRIER, masks.BALL | masks.TANK);
   
   game.add.existing(this);
 }
