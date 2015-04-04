@@ -37,12 +37,11 @@ Game.prototype.create = function create() {
   this.game.events.turnEnded = new Phaser.Signal(); // create new signal for a turn ending
 
   var x = (this.game.width / 2) - 100;
-  var y = (this.game.height / 2) - 50;
 
   // Players object, contains all potential players
   this.players = {
-    1: new Tank(this.game, x, this.game.height-75, true),
-    2: new Tank(this.game, x + 300, this.game.height-75, false)
+    1: new Tank(this.game, x, this.game.height-50, true),
+    2: new Tank(this.game, x + 300, this.game.height-50, false)
   };
 
   this.players[Math.floor(Math.random() * 2) + 1].active = true; // randomly select the first player
@@ -91,11 +90,6 @@ Game.prototype.update = function update() {
  * @private
  */
 function _playerPhysics(game, level, player) {
-  //CMH: The Arcade collision mechanisms isn't exactly great, need better system to apply
-  //DRB: What is this bit actually doing? it doesn't seem to do anything if I comment it out...
-  //generically to the world
-  game.physics.arcade.collide(player, level);
-
   //same down here
   _levelCollision(game, level, player);
 
@@ -126,9 +120,8 @@ function _playerPhysics(game, level, player) {
  * @private
  */
 function _levelCollision(game, level, thingy, cb) {
-  for(var platform in level) {
-    if(level.hasOwnProperty(platform)) {
-      game.physics.arcade.collide(thingy, level[platform], (cb || null));
-    }
+	var i, len;
+  for(i = 0, len = level.tileLayers.length; i < len; i++) {
+    game.physics.arcade.collide(thingy, level.tileLayers[i], (cb || null));
   }
 }

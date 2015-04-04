@@ -28,7 +28,8 @@
     "gulp-streamify": "*",
     "watchify": "*",
     "gulp-if": "*",
-    "vinyl-paths": "*"
+    "vinyl-paths": "*",
+    "seedrandom": "*"
   },
 
   "scripts": {
