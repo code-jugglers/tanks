@@ -41,8 +41,8 @@ Game.prototype.create = function create() {
 
   // Players object, contains all potential players
   this.players = {
-    1: new Tank(this.game, x, this.game.height-75),
-    2: new Tank(this.game, x + 300, this.game.height-75)
+    1: new Tank(this.game, x, this.game.height-75, true),
+    2: new Tank(this.game, x + 300, this.game.height-75, false)
   };
 
   this.players[Math.floor(Math.random() * 2) + 1].active = true; // randomly select the first player

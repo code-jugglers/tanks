@@ -15,11 +15,12 @@ var CannonBall = require('./CannonBall');
  *
  * @constructor
  */
-function Tank(game, x, y) {
+function Tank(game, x, y, faceEast) {
   CharacterGroup.call(this, game); //, x, y, 'tank');
 
   this.x = x;
   this.y = y;
+  this.faceEast = faceEast;
 
   this.game = game;
 
@@ -40,6 +41,10 @@ function Tank(game, x, y) {
   // this.barrel.body.allowGravity = false;
 
   this.balls = [];
+
+  if (!this.faceEast) {
+    this.scale.x = -1;
+  }
 
   game.add.existing(this);
 }
@@ -111,7 +116,7 @@ Tank.prototype.fire = function fire() {
     var sin_res = Math.sin(this.barrel.rotation);
 
     // convert barrel coordinate (group) system to world coordinates as ball is in the world not tank group
-    var ball_x = this.x + this.barrel.x + cos_res * barrel_len;
+    var ball_x = this.x + (this.barrel.x + cos_res * barrel_len) * this.scale.x;
     var ball_y = this.y + this.barrel.y + sin_res * barrel_len;
 
     var ball = new CannonBall(this.game, ball_x, ball_y);
@@ -122,7 +127,7 @@ Tank.prototype.fire = function fire() {
       balls.splice(balls.indexOf(ball),1);
     }.bind(this), ball);
 
-    ball.shoot(ball_x, ball_y, ball_x + cos_res * ball_power, ball_y + sin_res * ball_power);
+    ball.shoot(ball_x, ball_y, ball_x + (cos_res * ball_power) * this.scale.x, ball_y + sin_res * ball_power);
 
     this.balls.push(ball);
   }
