@@ -39,12 +39,14 @@ CannonBall.prototype.update = function() {
   }
 
   if(!this.inWorld || this.hits >= MAX_HITS) {
+    this.pmdata.kill = true;
     this.game.events.turnEnded.dispatch(this);
     this.destroy();
   }
   else if (this.tankHit) {
     // Maybe do something different here eventually
     // Hit/damage logic should happen in tank collision handler
+    this.pmdata.kill = true;
     this.game.events.turnEnded.dispatch(this);
     this.destroy(); 
   }
