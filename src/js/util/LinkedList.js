@@ -9,8 +9,10 @@ LinkedList.constructor = LinkedList;
 
 LinkedList.prototype.push = function(data) {
 	this.length++;
+
 	var node = {next:null, prev:null, data:data};
-	if (this.tail == null) {
+
+	if (this.tail === null) {
 		this.head = node;
 		this.tail = node; 
 	}
@@ -19,11 +21,11 @@ LinkedList.prototype.push = function(data) {
 		node.prev = this.tail;
 		this.tail = node;
 	}
-}
+};
 
 LinkedList.prototype.remove = function(node) {
 	this.length--;
-	if (node == this.head) {
+	if (node === this.head) {
 		this.head = node.next;
 		if (this.head) {
 			this.head.prev = null;
@@ -40,6 +42,6 @@ LinkedList.prototype.remove = function(node) {
 		node.prev = this.tail;
 		this.tail = node;
 	}
-}
+};
 
 module.exports = LinkedList;
