@@ -2,6 +2,15 @@ var Character = require('./Character');
 
 var MAX_HITS = 3;
 
+/**
+ * @name ConnonBall
+ *
+ * @param {object} game
+ * @param {number} x
+ * @param {number} y
+ *
+ * @constructor
+ */
 function CannonBall(game, x, y) {
   Character.call(this, game, x, y, 'ball');
 
@@ -33,6 +42,11 @@ CannonBall.prototype.constructor = CannonBall;
 
 module.exports = CannonBall;
 
+/**
+ * @name update
+ *
+ * @memberof CannonBall
+ */
 CannonBall.prototype.update = function() {
   if (this.game.tanksConfig.debug) {
     this.game.debug.body(this);
@@ -52,11 +66,19 @@ CannonBall.prototype.update = function() {
   }
 };
 
+/**
+ * @name postCollision
+ *
+ * @memberof CannonBall
+ *
+ * @param other
+ * @param otherCGID
+ */
 CannonBall.prototype.postCollision = function(other, otherCGID) {
   if (otherCGID & this.masks.GROUND || otherCGID & this.masks.BARRIER) {
     this.hits++;
   }
-  else if (otherCGID & this.masks.TANK) {
+  else if (otherCGID && this.masks.TANK) {
     this.tankHit = true;
   }
 };
@@ -64,9 +86,16 @@ CannonBall.prototype.postCollision = function(other, otherCGID) {
 /**
  * @name shoot
  *
+ * @memberof CannonBall
+ *
  * @description
  * Given the source of the cannon ball (x1,y1), shoot it
  * towards the destination (x2,y2) in world coordinates.
+ *
+ * @param x1
+ * @param y1
+ * @param x2
+ * @param y2
  */
 CannonBall.prototype.shoot = function(x1, y1, x2, y2) {
   //CMH: Right now, simple vector calc, can apply multiplier for MOAR POWER!
