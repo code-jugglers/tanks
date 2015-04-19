@@ -2,11 +2,8 @@
   "name": "tanks",
   "description": "",
   "readme": "",
-  "repository": "",
+  "repository": "https://github.com/deebloo/tanks",
   "version": "0.0.0",
-  "readme": "",
-  "repository": "",
-  
   "devDependencies": {
     "bower": "*",
     "gulp": "*",
@@ -25,6 +22,8 @@
     "browserify": "*",
     "tiny-lr": "*",
     "vinyl-source-stream": "*",
+    "gulp-sourcemaps": "*",
+    "vinyl-buffer": "*",
     "gulp-streamify": "*",
     "watchify": "*",
     "gulp-if": "*",

@@ -37,23 +37,17 @@ PhysicsMgr.prototype.update = function() {
   var firstNode, first;
   var secondNode, second;
 
-  // Get the first node in the linkedlist of entities
   firstNode = this.entities.head;
 
-  // loop through the list until we read the end
   while (firstNode != null) {
-    // Get the data for the first node
     first = firstNode.data;
     // If this entity has been schedule for kill, need to remove it from the list
     if (first.entity.pmdata.kill) {
       this.entities.remove(firstNode);
     }
     else {
-      // otherwise start comparing against the other entities in the list
       secondNode = firstNode.next;
-      // loop through the list until we read the end
       while (secondNode != null) {
-        // Get the data for the second node
         second = secondNode.data;
         // If this entity has been scheduled for kill, remove it from the list
         if (second.entity.pmdata.kill) {
@@ -72,11 +66,9 @@ PhysicsMgr.prototype.update = function() {
             }
           }, null, this);
         }
-        // Move onto the next node in the list
         secondNode = secondNode.next;    
       }
     }
-    // Move onto the next node in the list
     firstNode = firstNode.next;
   }
 }

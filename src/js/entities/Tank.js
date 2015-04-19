@@ -50,6 +50,7 @@ function Tank(game, x, y, faceEast) {
   game.physicsmgr.register(this.tank, masks.TANK, masks.BALL | masks.BARRIER, this.postCollision, this);
   game.add.existing(this);
   this.masks = masks;
+  this.powerMeter = new PowerMeter(this.game, this);
 }
 
 Tank.prototype = Object.create(CharacterGroup.prototype);
@@ -81,7 +82,7 @@ Tank.prototype.update = function() {
   else if (cursors.down.isDown) {
     this.barrel.angle = Math.min(this.barrel.angle + 0.2*dt, 0);
   }
-  
+
   if(cursors.left.isDown) {
     this.x = Math.max(this.x - 0.2 * dt, 68); //150;
   }
@@ -90,7 +91,15 @@ Tank.prototype.update = function() {
   }
 
   if(cursors.spaceBar.isDown) {
-    this.fire(); // fire cannon ball
+    this.fire();
+  }
+
+  //Moar Power!
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.UNDERSCORE)) {
+      this.powerMeter.powerManager.lessPower(dt);
+  }
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.EQUALS)) {
+      this.powerMeter.powerManager.morePower(dt);
   }
 
   if(this.game.tanksConfig.debug) {
@@ -112,8 +121,8 @@ Tank.prototype.fire = function fire() {
   if(!this.balls.length) {
 
     var barrel_len = 60;
-    var ball_power = 350;
-    
+    var ball_power = 350
+
     //calculate and save, trig can be expensive
     var cos_res = Math.cos(this.barrel.rotation);
     var sin_res = Math.sin(this.barrel.rotation);
@@ -131,7 +140,12 @@ Tank.prototype.fire = function fire() {
       balls.splice(balls.indexOf(ball),1);
     }.bind(this), ball);
 
-    ball.shoot(ball_x, ball_y, ball_x + (cos_res * ball_power) * this.scale.x, ball_y + sin_res * ball_power);
+    ball.shoot(
+      ball_x,
+      ball_y,
+      ball_x + (cos_res * this.powerMeter.powerManager.getPower()) * this.scale.x,
+      ball_y + sin_res * this.powerMeter.powerManager.getPower()
+    );
 
     this.balls.push(ball);
   }
@@ -151,3 +165,75 @@ Tank.prototype.postCollision = function(other, otherCGID) {
     }
   }
 };
+
+/**
+*   Power!
+*/
+function PowerMeter(game, tankGroup) {
+  var power = 100;
+  var min = 100;    //Adjust me?
+  var max = 800;
+  var powerVel = 0.5; //== 0.5 power points/ms
+
+  var width = 100;
+  var height = 10;
+
+  var xpos = -58;
+  var ypos = -44;
+
+  var mask = game.add.graphics(0, 0);
+  var maskRect;
+  var bmd = game.add.bitmapData(width, height);
+  
+  function init() {
+    for (var i = 0; i < width; i++) {
+      var c = Phaser.Color.interpolateColor(0xff0000, 0x00ff00, width, i);
+      bmd.rect(i, 0, 1, height, Phaser.Color.getWebRGB(c));
+    }
+
+    mask.beginFill(0xffffff);
+    maskRect = mask.drawRect(xpos, ypos, getMaskWidth(), height);
+  }
+
+  function morePower(dt) {
+    power = Math.min(power + powerVel * dt, max);
+    update();
+  }
+
+  function lessPower(dt) {
+    power = Math.max(power - powerVel * dt, min);
+    console.log("less", power);
+    update();
+  }
+
+  function update() {
+    mask.clear();
+    mask.beginFill(0xffffff);
+    mask.drawRect(xpos, ypos, getMaskWidth(), height);
+  }
+
+  function getPower() {
+    return power;
+  }
+
+  function getMaskWidth() {
+    return (power/max) * width;
+  }
+
+  var powerManager = {
+    morePower: morePower,
+    lessPower: lessPower,
+    getPower: getPower
+  };
+
+  tankGroup.add(mask);
+  var sprite = tankGroup.create(xpos, ypos, bmd);
+  //need to assign the mask to the actual sprite
+  sprite.mask = mask;
+
+  //so the update code works
+  sprite.powerManager = powerManager;
+
+  init();
+  return sprite;
+}
