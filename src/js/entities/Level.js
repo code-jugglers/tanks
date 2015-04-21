@@ -38,7 +38,7 @@ function Level(game) {
   this.terrainMap.setCollision([0,1], true, this.barrierLayer, false);
 
   var masks = game.tanksConfig.masks;
-  game.physicsmgr.register(this.groundLayer, masks.GROUND, masks.BALL);
+  game.physicsmgr.register(this.groundLayer, masks.GROUND, masks.BALL | masks.TANK);
   game.physicsmgr.register(this.barrierLayer, masks.BARRIER, masks.BALL | masks.TANK);
   
   game.add.existing(this);

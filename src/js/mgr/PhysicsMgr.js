@@ -61,7 +61,7 @@ PhysicsMgr.prototype.update = function() {
         }
         // Otherwise, check the collisions flags to see if we need to check for a collision
         // The flags are bitwise and'd, only if they share at least one bit, do we compare them
-        else if (first.cf & second.cf) {
+        else if (first.cgid & second.cf) {
           // Check for a collision and then fire the provided callbacks (if any)
           this.game.physics.arcade.collide(first.entity, second.entity, function() {
             if (first.cb) {

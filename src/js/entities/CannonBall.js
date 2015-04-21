@@ -32,7 +32,7 @@ function CannonBall(game, x, y) {
   // this.outOfBoundsKill = true;
 
   this.masks = game.tanksConfig.masks;
-  game.physicsmgr.register(this, this.masks.BALL, this.masks.BALL, this.postCollision);
+  game.physicsmgr.register(this, this.masks.BALL, this.masks.BALL | this.masks.TANK | this.masks.GROUND | this.masks.BARRIER, this.postCollision);
 
   game.add.existing(this);
 }
@@ -78,7 +78,7 @@ CannonBall.prototype.postCollision = function(other, otherCGID) {
   if (otherCGID & this.masks.GROUND || otherCGID & this.masks.BARRIER) {
     this.hits++;
   }
-  else if (otherCGID && this.masks.TANK) {
+  else if (otherCGID & this.masks.TANK) {
     this.tankHit = true;
   }
 };
