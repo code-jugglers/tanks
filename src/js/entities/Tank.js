@@ -121,7 +121,6 @@ Tank.prototype.fire = function fire() {
   if(!this.balls.length) {
 
     var barrel_len = 60;
-    var ball_power = 350
 
     //calculate and save, trig can be expensive
     var cos_res = Math.cos(this.barrel.rotation);
@@ -170,7 +169,7 @@ Tank.prototype.postCollision = function(other, otherCGID) {
 *   Power!
 */
 function PowerMeter(game, tankGroup) {
-  var power = 100;
+  var power = 400;
   var min = 100;    //Adjust me?
   var max = 800;
   var powerVel = 0.5; //== 0.5 power points/ms
@@ -202,7 +201,6 @@ function PowerMeter(game, tankGroup) {
 
   function lessPower(dt) {
     power = Math.max(power - powerVel * dt, min);
-    console.log("less", power);
     update();
   }
 

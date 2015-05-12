@@ -13,6 +13,7 @@ function Level(game) {
   this.mapCols = game.math.snapToCeil(game.width, TERRAIN_WIDTH) / TERRAIN_WIDTH;
   this.mapRows = game.math.snapToCeil(game.height, TERRAIN_HEIGHT) / TERRAIN_HEIGHT;
   this.mapColsHalfWay = Math.floor(this.mapCols/2);
+  this.mapRowsHalfWay = Math.floor(this.mapRows/2);
 
   // Build Tilemap for constructing level
   this.terrainMap = new Phaser.Tilemap(game, null, TERRAIN_WIDTH, TERRAIN_HEIGHT, this.mapCols, this.mapRows);
@@ -47,14 +48,61 @@ function Level(game) {
 Level.prototype = Object.create(Phaser.Group.prototype);
 Level.prototype.constructor = Level;
 
-Level.prototype.update = function() { };
+Level.prototype.update = function() {};
 
 Level.prototype.generateLevel = function(seed) {
-  var random = new Random(seed);
-  for (var row = 0; row < this.mapRows; row++) {
-    if (random.coinFlip()) {
-      this.terrainMap.putTile(1, this.mapColsHalfWay, row, this.barrierLayer);
+  this.random = new Random(seed);
+
+  var numClusters = this.random.range(10, 20);
+  // console.log("Number of Clusters: " + numClusters);
+  for (var cluster = 0; cluster < numClusters; cluster++) {
+    // console.log("Cluster #" + cluster);
+    var startRow = this.random.range(0, this.mapRows);
+    var startCol = this.random.range(0, this.mapCols);
+
+    this.buildCluster(startCol, startRow);
+  }
+}
+
+Level.prototype.buildCluster = function(x, y) {
+  var clusterSize = this.random.range(6, 14);
+  // console.log("  Size: " + clusterSize);
+  this.mirror(x, y);
+  // console.log("  Block 0: (" + x + "," + y + ")");
+  for (var i = 1; i < clusterSize; i++) {
+    switch (this.random.range(0,4)) {
+      case 0: x++; break;
+      case 1: x--; break;
+      case 2: y++; break;
+      case 3: y--; break;
     }
+    // console.log("  Block " + i + ": (" + x + "," + y + ")");
+    this.mirror(x, y);
+  }
+}
+
+/**
+ * Mirror a block placement if it isn't in the middle of the level.
+ */
+Level.prototype.mirror = function(column, row) {
+  this.safePut(1, column, row, this.barrierLayer);
+  if (column !== this.mapColsHalfWay) {
+    this.safePut(1, this.mapCols-column-1, row, this.barrierLayer);
+  }
+}
+
+Level.prototype.safePut = function(tile, x, y, layer) {
+  // stay on the game map
+  if (x < 0 || x > this.mapCols || y < 0 || y > (this.mapRows-2)) {
+    return;
+  }
+  // protect tank space
+  if ((x < 12 || x > (this.mapCols-13)) && y > (this.mapRows-10)) {
+    return;
+  }
+
+  if (this.terrainMap.getTile(x, y) === null) {
+    this.terrainMap.putTile(tile, x, y, layer);
   }
 }
 

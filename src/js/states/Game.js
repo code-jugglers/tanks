@@ -40,12 +40,10 @@ Game.prototype.create = function create() {
 
   this.game.events.turnEnded = new Phaser.Signal(); // create new signal for a turn ending
 
-  var x = (this.game.width / 2) - 100;
-
   // Players object, contains all potential players
   this.players = {
-    1: new Tank(this.game, x, this.game.height-50, true),
-    2: new Tank(this.game, x + 300, this.game.height-50, false)
+    1: new Tank(this.game, 100, this.game.height-50, true),
+    2: new Tank(this.game, this.game.width-100, this.game.height-50, false)
   };
 
   this.players[Math.floor(Math.random() * 2) + 1].active = true; // randomly select the first player

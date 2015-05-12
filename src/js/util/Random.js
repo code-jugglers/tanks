@@ -15,4 +15,8 @@ Random.prototype.coinFlip = function() {
 	return (this.rng() < 0.5);
 }
 
+Random.prototype.range = function(start, end) {
+	return Math.floor(this.rng() * (end - start) + start);
+}
+
 module.exports = Random;
