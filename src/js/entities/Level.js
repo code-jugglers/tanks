@@ -15,6 +15,8 @@ function Level(game) {
   this.mapColsHalfWay = Math.floor(this.mapCols/2);
   this.mapRowsHalfWay = Math.floor(this.mapRows/2);
 
+  this.debounce = false;
+
   // Build Tilemap for constructing level
   this.terrainMap = new Phaser.Tilemap(game, null, TERRAIN_WIDTH, TERRAIN_HEIGHT, this.mapCols, this.mapRows);
   this.terrainMap.addTilesetImage('terrain', 'terrain');
@@ -48,7 +50,29 @@ function Level(game) {
 Level.prototype = Object.create(Phaser.Group.prototype);
 Level.prototype.constructor = Level;
 
-Level.prototype.update = function() {};
+Level.prototype.update = function() {
+  var dt = this.game.time.physicsElapsedMS;
+
+  if (this.debounce) {
+    this.elapsed += dt;
+    if (this.elapsed > 500) {
+      this.debounce = false;
+    }
+  }
+
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.R) && !this.debounce) {
+    this.elapsed = 0;
+    this.debounce = true;
+    for (var i = 0; i < this.mapCols; i++) {
+      for (var j = 0; j < this.mapRows; j++) {
+        this.terrainMap.removeTile(i, j, this.barrierLayer);    
+      }
+    }
+    var newDeterministicSeed = this.random.string(16);
+    this.generateLevel(newDeterministicSeed);
+    console.log("Generated with: " + newDeterministicSeed);
+  }
+};
 
 Level.prototype.generateLevel = function(seed) {
   this.random = new Random(seed);
