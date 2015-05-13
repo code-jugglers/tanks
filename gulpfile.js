@@ -88,6 +88,14 @@ gulp.task('connect', function () {
   });
 });
 
+gulp.task('serveprod', function() {
+  connect.server({
+    root: ['./dist'],
+    port: process.env.PORT || 9000, // localhost:5000
+    livereload: false
+  });
+});
+
 
 var customOpts = {
     cache: {}, packageCache: {}, fullPaths: true,

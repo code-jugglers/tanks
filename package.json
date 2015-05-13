@@ -4,7 +4,7 @@
   "readme": "",
   "repository": "https://github.com/deebloo/tanks",
   "version": "0.0.0",
-  "devDependencies": {
+  "dependencies": {
     "bower": "*",
     "gulp": "*",
     "gulp-util": "*",
