@@ -30,6 +30,12 @@ paths = {
   dist:   './dist/'
 };
 
+var customOpts = {
+    cache: {}, packageCache: {}, fullPaths: true,
+    entries: [paths.entry],
+    debug: false
+};
+
 gulp.task('clean', function () {
 	return gulp.src(paths.dist)
     .pipe(vinylPaths(del))
@@ -48,6 +54,18 @@ gulp.task('copylibs', ['clean'], function () {
     .pipe(gulp.dest(paths.dist + 'js/lib'))
     .on('error', gutil.log);
 });
+
+var b2 = browserify(customOpts);
+function bundle2() {
+    return b2.bundle()
+        .pipe(source('main.min.js'))
+        .pipe(jshint('.jshintrc'))
+        .pipe(jshint.reporter('default'))
+        .pipe(gulp.dest(paths.dist))
+        .on('error', gutil.log);
+}
+
+gulp.task('compile2', ['clean'], bundle2);
 
 gulp.task('minifycss', ['clean'], function () {
  gulp.src(paths.css)
@@ -97,11 +115,7 @@ gulp.task('serveprod', function() {
 });
 
 
-var customOpts = {
-    cache: {}, packageCache: {}, fullPaths: true,
-    entries: [paths.entry],
-    debug: false
-};
+
 
 var b = watchify(browserify(customOpts));
 
@@ -126,3 +140,4 @@ gulp.task('watch', function () {
 
 gulp.task('default', ['connect', 'watch', 'build']);
 gulp.task('build', ['clean', 'copy', 'copylibs', 'compile', 'minifycss', 'processhtml', 'minifyhtml']);
+gulp.task('build2', ['clean', 'copy', 'copylibs', 'compile2', 'minifycss', 'processhtml', 'minifyhtml']);
